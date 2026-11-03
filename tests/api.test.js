@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ApiError, createApiClient, normalizeApiBase } from "../src/api.js";
 
@@ -8,6 +8,8 @@ function jsonResponse(payload, status = 200) {
     headers: { "Content-Type": "application/json" },
   });
 }
+
+afterEach(() => vi.useRealTimers());
 
 describe("API client", () => {
   it("reads sequence artifacts with bounded bytes and header-only authentication", async () => {
@@ -88,6 +90,52 @@ describe("API client", () => {
     const [, request] = fetchMock.mock.calls[0];
     expect(request.method).toBe("DELETE");
     expect(request.headers.Authorization).toBe("Bearer private-token");
+  });
+
+  it("explains an unconfirmed cancellation without exposing the browser network error", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValue(new TypeError("NetworkError when attempting to fetch resource."));
+    const client = createApiClient("https://analysis.example.org", fetchMock);
+    await expect(client.cancelJob("job-1", "private-token")).rejects.toMatchObject({
+      code: "network_error",
+      message: expect.stringContaining("Cancellation could not be confirmed"),
+    });
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  it("times out a hung cancellation so it can be retried", async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi.fn(
+      (_url, { signal }) =>
+        new Promise((_resolve, reject) => {
+          signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+        }),
+    );
+    const client = createApiClient("https://analysis.example.org", fetchMock);
+    const pending = expect(client.cancelJob("job-1", "private-token")).rejects.toMatchObject({
+      code: "request_timeout",
+      message: expect.stringContaining("may still be running"),
+    });
+    await vi.advanceTimersByTimeAsync(15_000);
+    await pending;
+    expect(fetchMock.mock.calls[0][1].signal.aborted).toBe(true);
+  });
+
+  it("preserves caller cancellation instead of reporting a network outage", async () => {
+    const fetchMock = vi.fn(
+      (_url, { signal }) =>
+        new Promise((_resolve, reject) => {
+          signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+        }),
+    );
+    const controller = new AbortController();
+    const client = createApiClient("https://analysis.example.org", fetchMock);
+    const pending = expect(
+      client.getJob("job-1", "private-token", { signal: controller.signal }),
+    ).rejects.toMatchObject({ name: "AbortError" });
+    controller.abort();
+    await pending;
   });
 
   it("downloads artifacts as authenticated blobs without token-bearing links", async () => {

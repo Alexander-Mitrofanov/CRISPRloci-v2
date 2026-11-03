@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { TERMINAL_STATUSES, stagesForMode } from "../../science.js";
 import { formatDate } from "../../utils/formatting.js";
@@ -21,11 +21,18 @@ const props = defineProps({
   job: { type: Object, required: true },
   credential: { type: Object, required: true },
   cancelling: Boolean,
+  connectionError: Boolean,
 });
-defineEmits(["cancel", "forget"]);
+defineEmits(["cancel", "forget", "refresh"]);
+const recoverySaved = ref(false);
+watch(
+  () => `${props.credential.jobId}.${props.credential.accessToken}`,
+  () => (recoverySaved.value = false),
+);
 
 const statusCopy = (status) =>
   ({
+    unknown: "Checking job status",
     queued: "Queued",
     running: "Analysis running",
     validate_input: "Validating input",
@@ -53,6 +60,7 @@ const current = computed(
 );
 const currentIndex = computed(() => stages.value.findIndex((stage) => stage.id === current.value));
 const terminal = computed(() => TERMINAL_STATUSES.has(props.job?.status));
+const statusKnown = computed(() => props.job?.status && props.job.status !== "unknown");
 const successful = computed(() =>
   ["completed", "completed_no_eligible_groups"].includes(props.job?.status),
 );
@@ -69,7 +77,7 @@ const successful = computed(() =>
           id="job-heading"
           tabindex="-1"
         >
-          {{ statusCopy(job?.status || "queued") }}
+          {{ connectionError ? "Job status unavailable" : statusCopy(job?.status || "unknown") }}
         </h2>
         <p class="job-id">
           Job <code>{{ credential.jobId }}</code> ·
@@ -83,12 +91,41 @@ const successful = computed(() =>
       <span
         :class="['job-badge', successful ? 'success' : terminal ? 'terminal' : 'active']"
         role="status"
-        ><i />{{ successful ? "Ready" : terminal ? statusCopy(job?.status) : "In progress" }}</span
+        ><i />{{
+          connectionError
+            ? "Connection interrupted"
+            : !statusKnown
+              ? "Checking"
+              : successful
+                ? "Ready"
+                : terminal
+                  ? statusCopy(job?.status)
+                  : "In progress"
+        }}</span
       >
     </div>
     <RecoveryLink :credential="credential" />
+    <div
+      v-if="connectionError"
+      class="job-message"
+      role="status"
+    >
+      <AppIcon name="warning" />
+      <div>
+        <strong>The connection to the analysis service was interrupted.</strong>
+        <p>Displayed job details may be out of date. We will retry automatically.</p>
+        <button
+          class="leave-job-button"
+          type="button"
+          :disabled="cancelling"
+          @click="$emit('refresh')"
+        >
+          Retry status
+        </button>
+      </div>
+    </div>
     <ol
-      v-if="!terminal"
+      v-if="!terminal && statusKnown && !connectionError"
       class="stage-list"
       aria-label="Analysis progress"
     >
@@ -118,7 +155,7 @@ const successful = computed(() =>
       </li>
     </ol>
     <p
-      v-if="!terminal && job?.status === 'running' && !job?.stage"
+      v-if="!terminal && !connectionError && job?.status === 'running' && !job?.stage"
       class="stage-unavailable"
     >
       <AppIcon
@@ -147,6 +184,35 @@ const successful = computed(() =>
           :size="16"
         />{{ cancelling ? "Cancelling…" : "Cancel job" }}
       </button>
+    </div>
+    <div
+      v-if="!terminal"
+      class="job-message"
+    >
+      <AppIcon name="info" />
+      <div>
+        <p>
+          You can leave this page after saving the recovery link. Leaving does not cancel the job or
+          free its server slot.
+        </p>
+        <label>
+          <input
+            v-model="recoverySaved"
+            type="checkbox"
+          />
+          I have saved the recovery link.
+        </label>
+        <div class="queue-row">
+          <button
+            class="leave-job-button"
+            type="button"
+            :disabled="!recoverySaved || cancelling"
+            @click="$emit('forget')"
+          >
+            Leave this job and start another
+          </button>
+        </div>
+      </div>
     </div>
     <div
       v-if="job?.status === 'failed'"

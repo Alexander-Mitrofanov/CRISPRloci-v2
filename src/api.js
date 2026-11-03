@@ -119,6 +119,43 @@ export function createApiClient(baseUrl = DEFAULT_API_BASE, fetchImpl = globalTh
     ...extra,
   });
 
+  async function jobRequest(path, accessToken, { signal, method = "GET" } = {}) {
+    const controller = new AbortController();
+    let timedOut = false;
+    const abort = () => controller.abort();
+    if (signal?.aborted) abort();
+    else signal?.addEventListener("abort", abort, { once: true });
+    const timer = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 15_000);
+    try {
+      return await parseJsonResponse(
+        await fetchImpl(endpoint(path), {
+          ...PRIVATE_REQUEST_POLICY,
+          method,
+          headers: jobHeaders(accessToken),
+          signal: controller.signal,
+        }),
+      );
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      if (timedOut || error instanceof TypeError) {
+        throw new ApiError(
+          method === "DELETE"
+            ? "Cancellation could not be confirmed. The service is unreachable or did not respond. Keep your recovery link and retry; the job may still be running."
+            : "Job status could not be refreshed. The analysis service is unreachable or took too long to respond. Your recovery link is still available.",
+          0,
+          timedOut ? "request_timeout" : "network_error",
+        );
+      }
+      throw error;
+    } finally {
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", abort);
+    }
+  }
+
   return {
     configured: Boolean(String(baseUrl || "").trim()),
     displayBase: String(baseUrl || "")
@@ -204,24 +241,14 @@ export function createApiClient(baseUrl = DEFAULT_API_BASE, fetchImpl = globalTh
     },
 
     async getJob(jobId, accessToken, { signal } = {}) {
-      return parseJsonResponse(
-        await fetchImpl(endpoint(contractPath("job_status", { job_id: jobId })), {
-          ...PRIVATE_REQUEST_POLICY,
-          headers: jobHeaders(accessToken),
-          signal,
-        }),
-      );
+      return jobRequest(contractPath("job_status", { job_id: jobId }), accessToken, { signal });
     },
 
     async cancelJob(jobId, accessToken, { signal } = {}) {
-      return parseJsonResponse(
-        await fetchImpl(endpoint(contractPath("cancel_job", { job_id: jobId })), {
-          ...PRIVATE_REQUEST_POLICY,
-          method: publicApiContract.routes.cancel_job.method,
-          headers: jobHeaders(accessToken),
-          signal,
-        }),
-      );
+      return jobRequest(contractPath("cancel_job", { job_id: jobId }), accessToken, {
+        method: publicApiContract.routes.cancel_job.method,
+        signal,
+      });
     },
 
     async downloadBundle(jobId, accessToken, { signal } = {}) {

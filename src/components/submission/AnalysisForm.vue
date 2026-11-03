@@ -227,8 +227,8 @@ function focusIssue(field) {
         role="status"
       >
         <AppIcon name="info" /><span
-          ><strong>Another job is open.</strong> Copy its recovery link, then cancel it or leave it
-          after completion.</span
+          ><strong>Another job is open in this tab.</strong> Return to current results to check its
+          status, cancel it, or save its recovery link and leave.</span
         >
       </div>
       <div

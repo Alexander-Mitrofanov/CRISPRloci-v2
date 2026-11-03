@@ -32,12 +32,13 @@ export function useJobSession(client = api, browser = window) {
   async function poll() {
     const current = credential.value;
     if (!current) return;
-    pollController = new AbortController();
+    const request = new AbortController();
+    pollController = request;
     try {
       const latest = await client.getJob(current.jobId, current.accessToken, {
-        signal: pollController.signal,
+        signal: request.signal,
       });
-      if (credential.value !== current) return;
+      if (request.signal.aborted || credential.value !== current) return;
       job.value = latest;
       pollError.value = "";
       if (latest.expires_at && latest.expires_at !== current.expiresAt) {
@@ -46,15 +47,31 @@ export function useJobSession(client = api, browser = window) {
       }
       if (!TERMINAL_STATUSES.has(latest.status)) pollTimer = window.setTimeout(poll, 2_500);
     } catch (error) {
-      if (error.name === "AbortError" || credential.value !== current) return;
+      if (request.signal.aborted || error.name === "AbortError" || credential.value !== current)
+        return;
       if ([401, 403, 404, 410].includes(error.status)) {
         credential.value = null;
         job.value = null;
       }
       pollError.value = error.message || "Job status could not be refreshed.";
       if (![401, 403, 404, 410].includes(error.status)) pollTimer = window.setTimeout(poll, 5_000);
+    } finally {
+      if (pollController === request) pollController = undefined;
     }
   }
+
+  function refresh() {
+    if (cancelling.value) return;
+    stopPolling();
+    if (credential.value) void poll();
+  }
+
+  function retryWhenAvailable() {
+    if (pollError.value && credential.value) refresh();
+  }
+
+  browser.addEventListener("online", retryWhenAvailable);
+  browser.addEventListener("focus", retryWhenAvailable);
 
   watch(
     credential,
@@ -118,6 +135,7 @@ export function useJobSession(client = api, browser = window) {
     if (!current || sameJobCapability(cancellingCredential, current)) return;
     cancellingCredential = current;
     cancelling.value = true;
+    stopPolling();
     pollError.value = "";
     try {
       const response = await client.cancelJob(current.jobId, current.accessToken);
@@ -130,6 +148,11 @@ export function useJobSession(client = api, browser = window) {
       if (sameJobCapability(cancellingCredential, current)) {
         cancellingCredential = undefined;
         cancelling.value = false;
+        if (
+          sameJobCapability(credential.value, current) &&
+          !TERMINAL_STATUSES.has(job.value?.status)
+        )
+          pollTimer = window.setTimeout(poll, 2_500);
       }
     }
   }
@@ -145,6 +168,8 @@ export function useJobSession(client = api, browser = window) {
     window.clearTimeout(revealTimer);
     stopPolling();
     browser.removeEventListener("hashchange", onHashChange);
+    browser.removeEventListener("online", retryWhenAvailable);
+    browser.removeEventListener("focus", retryWhenAvailable);
     removeRecoveryNavigation();
   });
   return {
@@ -156,6 +181,7 @@ export function useJobSession(client = api, browser = window) {
     onSubmitted,
     onExampleLoaded,
     cancel,
+    refresh,
     forget,
   };
 }

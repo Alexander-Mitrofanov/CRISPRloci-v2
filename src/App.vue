@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import ModeSelector from "./components/submission/ModeSelector.vue";
 import { useAnalysisNavigation } from "./composables/useAnalysisNavigation.js";
 import AnalysisForm from "./components/submission/AnalysisForm.vue";
@@ -12,7 +12,7 @@ import { useServiceConfig } from "./composables/useServiceConfig.js";
 import CatalogView from "./components/catalog/CatalogView.vue";
 import { exampleAssetsFor } from "./example.js";
 
-const { service, limits } = useServiceConfig();
+const { service, limits, refresh: refreshService } = useServiceConfig();
 const {
   credential,
   job,
@@ -22,8 +22,12 @@ const {
   onSubmitted,
   onExampleLoaded,
   cancel,
+  refresh,
   forget,
 } = useJobSession();
+watch(pollError, (message) => {
+  if (message) void refreshService();
+});
 const hasSession = computed(() => Boolean(exampleSnapshot.value || credential.value));
 const publicBase = import.meta.env.BASE_URL;
 const exampleAssets = computed(
@@ -156,10 +160,12 @@ const blocksSubmission = computed(
         class="job-anchor"
       >
         <JobProgress
-          :job="job || { status: 'queued' }"
+          :job="job || { status: 'unknown' }"
           :credential="credential"
           :cancelling="cancelling"
+          :connection-error="Boolean(pollError)"
           @cancel="cancel"
+          @refresh="refresh"
           @forget="leaveJob"
         /><ResultsView
           :job="job"
