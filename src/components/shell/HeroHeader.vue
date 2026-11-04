@@ -1,5 +1,6 @@
 <script setup>
 import BrandMark from "../common/BrandMark.vue";
+import ColorSchemeToggle from "./ColorSchemeToggle.vue";
 import ServiceStatus from "./ServiceStatus.vue";
 
 defineProps({
@@ -29,7 +30,7 @@ defineEmits(["analyze", "database", "references"]);
           href="#references"
           @click.prevent="$emit('references')"
           >References</a
-        ><ServiceStatus
+        ><ColorSchemeToggle /><ServiceStatus
           :service="service"
           :analysis-context="databaseActive"
         />

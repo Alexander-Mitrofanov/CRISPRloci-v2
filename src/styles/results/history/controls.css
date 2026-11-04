@@ -1,6 +1,6 @@
 .history-explorer {
   border-bottom: 1px solid var(--line);
-  background: white;
+  background: var(--surface);
 }
 .history-heading {
   display: flex;

@@ -63,6 +63,20 @@ defineProps({ name: { type: String, default: "info" }, size: { type: Number, def
       v-else-if="name === 'minus'"
       d="M5 12h14"
     />
+    <template v-else-if="name === 'sun'">
+      <circle
+        cx="12"
+        cy="12"
+        r="3.5"
+      />
+      <path
+        d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"
+      />
+    </template>
+    <path
+      v-else-if="name === 'moon'"
+      d="M20 15.3A8.4 8.4 0 0 1 8.7 4a8.5 8.5 0 1 0 11.3 11.3Z"
+    />
     <template v-else-if="name === 'tree'">
       <path d="M7 4v16M7 8h6M7 16h6" />
       <circle

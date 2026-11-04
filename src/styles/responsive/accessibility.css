@@ -28,6 +28,11 @@
     --line-dark: #5d746a;
     --muted: #40574f;
   }
+  :root[data-theme="dark"] {
+    --line: #71857d;
+    --line-dark: #9eaea8;
+    --muted: #c7d2ce;
+  }
   .mode-card,
   .input-panel,
   .advanced,

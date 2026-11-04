@@ -1,6 +1,6 @@
 .advanced {
   border: 1px solid var(--line);
-  background: white;
+  background: var(--surface);
 }
 .advanced > summary {
   display: grid;

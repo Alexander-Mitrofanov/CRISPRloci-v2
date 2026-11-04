@@ -39,7 +39,7 @@
   margin-top: 9px;
   padding: 16px;
   border-top: 3px solid var(--group-accent);
-  background: white;
+  background: var(--surface);
 }
 .ancestor-state > div:first-child > * {
   display: block;

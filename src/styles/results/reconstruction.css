@@ -27,7 +27,7 @@
 }
 .model-selection {
   border-left: 1px solid var(--line);
-  background: white;
+  background: var(--surface);
 }
 .model-selection > strong {
   display: block;
@@ -46,7 +46,7 @@
   position: relative;
   overflow: hidden;
   border: 1px solid #cfd6ce;
-  background: white;
+  background: var(--surface);
 }
 .event-ribbon-chart {
   width: 100%;
@@ -103,7 +103,7 @@
   display: inline-block;
   position: relative;
   border: 2px solid currentColor;
-  background: white;
+  background: var(--surface);
 }
 .event-glyph-acquisition {
   border-color: #4b885f;
@@ -141,7 +141,7 @@
   grid-template-columns: repeat(4, 1fr);
   margin-top: 10px;
   border: 1px solid var(--line);
-  background: white;
+  background: var(--surface);
 }
 .special-event-grid > span {
   min-width: 0;
@@ -280,7 +280,7 @@
 .spacer-inventory {
   padding: 22px 24px 24px;
   border-top: 1px solid var(--line);
-  background: white;
+  background: var(--surface);
 }
 .spacer-blocks {
   min-height: 44px;
@@ -367,7 +367,7 @@
 .tree-graphic {
   padding: 22px 24px;
   border-bottom: 1px solid var(--line);
-  background: white;
+  background: var(--surface);
 }
 .tree-graphic svg {
   width: 100%;

@@ -7,5 +7,7 @@ afterEach(() => {
   if (typeof window !== "undefined") {
     window.localStorage.clear();
     window.sessionStorage.clear();
+    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.style.removeProperty("color-scheme");
   }
 });

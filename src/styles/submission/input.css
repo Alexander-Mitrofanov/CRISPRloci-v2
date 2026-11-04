@@ -13,7 +13,7 @@
   min-width: 0;
   padding: 0;
   border: 0;
-  background: white;
+  background: var(--surface);
 }
 .input-heading {
   display: flex;
@@ -107,11 +107,11 @@ textarea {
   margin-top: 10px;
   resize: vertical;
   padding: 18px;
-  border: 1px solid #cdd3ca;
+  border: 1px solid var(--line-dark);
   border-radius: 0;
   outline: 0;
-  color: #1a3c33;
-  background: #fafbf7;
+  color: var(--ink);
+  background: var(--surface);
   font-size: 0.86rem;
   line-height: 1.65;
 }

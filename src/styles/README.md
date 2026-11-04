@@ -12,6 +12,7 @@ The stylesheet entry point is `index.css`. Import order preserves the cascade.
 - `loci.css` — annotation views and optional genomic context
 - `catalog.css` — public dataset coverage, database browsing, sequence occurrences and array details
 - `refinements/` — final polish split by global/shell, submission, jobs, results, and content
+- `themes.css` — cross-domain color-scheme overrides; semantic layout stays in its domain file
 - `responsive/` — tablet, mobile, compact, accessibility, and print overrides
 
 Prefer a component's domain file. Preserve the listed `refinements/` import

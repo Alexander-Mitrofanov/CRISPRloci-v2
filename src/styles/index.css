@@ -31,6 +31,7 @@
 @import "./refinements/jobs.css";
 @import "./refinements/results.css";
 @import "./refinements/content.css";
+@import "./themes.css";
 @import "./responsive/tablet.css";
 @import "./responsive/mobile.css";
 @import "./responsive/compact.css";

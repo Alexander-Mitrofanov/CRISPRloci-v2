@@ -65,6 +65,31 @@ main {
   text-decoration: underline;
   text-underline-offset: 6px;
 }
+.color-scheme-toggle {
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid var(--night-800);
+  border-radius: var(--radius-sm);
+  color: var(--on-night-soft);
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.color-scheme-toggle:hover {
+  color: var(--on-night);
+  border-color: var(--on-night-muted);
+  background: var(--night-900);
+}
+.color-scheme-toggle .icon {
+  transition: transform 0.18s ease;
+}
+.color-scheme-toggle:hover .icon {
+  transform: rotate(-8deg);
+}
 .service-status {
   display: flex;
   align-items: center;

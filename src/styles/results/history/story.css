@@ -6,7 +6,7 @@
 .reconstruction-story {
   overflow: hidden;
   border: 1px solid var(--line);
-  background: white;
+  background: var(--surface);
 }
 .reconstruction-story-heading {
   display: flex;
@@ -38,7 +38,7 @@
 .reconstruction-story-heading > span {
   padding: 7px 9px;
   color: var(--ink);
-  background: white;
+  background: var(--surface);
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
@@ -50,7 +50,7 @@
   align-items: center;
   padding: 24px;
   color: var(--ink);
-  background: white;
+  background: var(--surface);
 }
 .spacerplacer-verdict > div:first-child > small {
   display: block;

@@ -5,7 +5,7 @@
   padding: 17px 18px;
   border: 1px solid var(--line-dark);
   color: #52665e;
-  background: white;
+  background: var(--surface);
   text-align: left;
   transition:
     border-color 0.15s,
@@ -66,7 +66,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 12px 24px 0;
   border: 1px solid var(--line);
-  background: white;
+  background: var(--surface);
 }
 .history-summary > span {
   min-width: 0;
@@ -105,7 +105,7 @@
   padding: 14px 16px;
   color: #405c53;
   border-top: 3px solid var(--group-accent);
-  background: white;
+  background: var(--surface);
 }
 .history-contrast .icon {
   color: var(--group-accent);
@@ -133,7 +133,7 @@
   padding: 6px 9px;
   border: 1px solid #c6cec6;
   color: #51665e;
-  background: white;
+  background: var(--surface);
   font-size: 0.75rem;
   font-weight: 600;
 }

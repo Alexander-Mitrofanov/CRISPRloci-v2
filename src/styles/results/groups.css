@@ -169,7 +169,7 @@
   align-items: center;
   padding: 10px;
   border: 1px solid color-mix(in srgb, var(--group-accent) 45%, #dfe3dc);
-  background: white;
+  background: var(--surface);
 }
 .group-member > div {
   min-width: 0;

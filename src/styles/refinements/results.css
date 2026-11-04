@@ -16,7 +16,7 @@
 .table-wrap {
   border-color: var(--line-dark);
   border-radius: var(--radius-md);
-  background: white;
+  background: var(--surface);
   scrollbar-color: #718b81 #edf1ee;
 }
 .table-wrap:focus-visible,
@@ -33,7 +33,7 @@ td,
   color: var(--ink);
 }
 .history-explorer {
-  background: white;
+  background: var(--surface);
 }
 .history-hypothesis {
   min-height: 96px;
@@ -134,7 +134,7 @@ td,
   overflow: hidden;
   border: 1px solid var(--line-dark);
   border-radius: var(--radius-md);
-  background: white;
+  background: var(--surface);
 }
 .history-data-table > summary {
   min-height: 48px;
