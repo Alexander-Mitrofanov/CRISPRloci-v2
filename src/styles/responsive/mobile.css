@@ -449,9 +449,10 @@
   .method-picker {
     margin-block: 32px 40px;
   }
-  .method-grid {
+  .method-groups {
     grid-template-columns: 1fr;
-    margin-top: 16px;
+    gap: 36px;
+    margin-top: 28px;
   }
   .method-link {
     min-height: 90px;

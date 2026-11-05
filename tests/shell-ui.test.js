@@ -53,6 +53,43 @@ describe("method-first navigation", () => {
     expect(container.querySelector("footer")).toBeNull();
   });
 
+  it("clusters methods by their scientific task", async () => {
+    renderApp();
+    await screen.findByRole("link", { name: "Spacer searches", exact: true });
+
+    const loci = screen.getByRole("region", { name: "Loci and components" });
+    for (const name of [
+      "Detect arrays",
+      "Annotate a CRISPR locus",
+      "Find Cas systems",
+      "Screen tracrRNA models",
+      "Extract leader context",
+    ]) {
+      expect(within(loci).getByRole("link", { name })).toBeVisible();
+    }
+
+    const context = await screen.findByRole("region", { name: "Genome context" });
+    for (const name of [
+      "Compare gene neighborhoods",
+      "Inspect prophage and spacer context",
+      "Inspect insertion-sequence context",
+      "Survey the defense repertoire",
+    ]) {
+      expect(within(context).getByRole("link", { name })).toBeVisible();
+    }
+
+    expect(
+      within(screen.getByRole("region", { name: "Arrays and evolution" })).getByRole("link", {
+        name: "Compare observed arrays",
+      }),
+    ).toBeVisible();
+    expect(
+      within(screen.getByRole("region", { name: "Spacers and references" })).getByRole("link", {
+        name: "Search the database",
+      }),
+    ).toBeVisible();
+  });
+
   it("opens the database from the main page and restores it through browser history", async () => {
     vi.spyOn(api, "catalogSummary").mockResolvedValue({ available: true });
     const records = vi

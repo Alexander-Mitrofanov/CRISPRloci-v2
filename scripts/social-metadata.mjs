@@ -1,4 +1,4 @@
-const defaultSiteUrl = "https://alexander-mitrofanov.github.io/crispr-evolution-web/";
+const defaultSiteUrl = "https://alexander-mitrofanov.github.io/CRISPRloci-v2/";
 const imageAlt =
   "CRISPRloci symbol: two offset genomic arrows in rose and white, " +
   "with aligned notches on charcoal. No lettering.";
