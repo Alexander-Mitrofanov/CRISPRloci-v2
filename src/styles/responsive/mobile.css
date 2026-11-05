@@ -451,8 +451,11 @@
   }
   .method-groups {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 40px;
     margin-top: 28px;
+  }
+  .method-grid {
+    grid-template-columns: 1fr;
   }
   .method-link {
     min-height: 90px;
