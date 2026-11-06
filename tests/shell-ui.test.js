@@ -124,13 +124,22 @@ describe("method-first navigation", () => {
     ).toHaveFocus();
     expect(
       screen.getByRole("button", {
-        name: method.id === "array_compare" ? "Upload arrays.json" : "Upload FASTA or JSON",
+        name:
+          method.id === "metagenomic"
+            ? "Upload FASTQ"
+            : method.id === "array_compare"
+              ? "Upload arrays.json"
+              : "Upload FASTA or JSON",
         exact: true,
       }),
     ).toBeInTheDocument();
     expect(
       screen.getByLabelText(
-        method.id === "array_compare" ? "Upload array JSON file" : "Upload FASTA file",
+        method.id === "metagenomic"
+          ? "Upload FASTQ file"
+          : method.id === "array_compare"
+            ? "Upload array JSON file"
+            : "Upload FASTA file",
       ),
     ).toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Choose a method" })).not.toBeInTheDocument();

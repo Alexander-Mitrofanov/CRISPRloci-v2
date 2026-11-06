@@ -45,7 +45,14 @@ const checks = computed(() => {
   return [
     {
       ok: inspection.valid ? true : props.hasInput ? false : null,
-      label: inspection.valid ? `Valid IUPAC ${props.molecule} FASTA` : "Valid FASTA required",
+      label:
+        selectedMode.id === "metagenomic"
+          ? inspection.valid
+            ? "Valid DNA FASTQ"
+            : "Valid FASTQ required"
+          : inspection.valid
+            ? `Valid IUPAC ${props.molecule} FASTA`
+            : "Valid FASTA required",
       detail: inspection.errors[0],
     },
     {

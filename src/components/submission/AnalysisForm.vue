@@ -3,6 +3,7 @@ import { useAnalysisForm } from "../../features/submission/index.js";
 import AppIcon from "../common/AppIcon.vue";
 import AdvancedOptions from "./AdvancedOptions.vue";
 import FastaInput from "./FastaInput.vue";
+import FastqInput from "./FastqInput.vue";
 import { ANALYSIS_MODES } from "../../science.js";
 import AssociationGrouping from "./AssociationGrouping.vue";
 import SpacerSearchControls from "./SpacerSearchControls.vue";
@@ -158,7 +159,15 @@ function focusIssue(field) {
           v-model="options.associationGrouping"
         />
         <div class="input-layout">
+          <FastqInput
+            v-if="mode === 'metagenomic'"
+            v-model:sequence="sequence"
+            v-model:filename="filename"
+            :inspection="inspection"
+            :max-request-bytes="limits.maxRequestBytes"
+          />
           <FastaInput
+            v-else
             v-model:sequence="sequence"
             v-model:filename="filename"
             :inspection="inspection"
@@ -192,6 +201,7 @@ function focusIssue(field) {
       <section
         v-if="
           ![
+            'metagenomic',
             'locus_compare',
             'prophage_context',
             'insertion_context',

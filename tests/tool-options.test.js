@@ -8,6 +8,19 @@ import {
 } from "../src/toolOptions.js";
 
 describe("shipped tool flag payloads", () => {
+  it("documents MCAAT worker-managed flags without accepting request overrides", () => {
+    const [tool] = toolsForMode("metagenomic");
+    expect(tool.id).toBe("mcaat");
+    expect(tool.flags).toEqual([]);
+    expect(tool.managed.flatMap((group) => group.flags)).toEqual(
+      expect.arrayContaining(["--input-files", "--threads", "--ram", "--low-abundance"]),
+    );
+    expect(
+      selectedToolOptions("metagenomic", {
+        mcaat: { "--ram": "100G", "--input-files": "/untrusted/input.fastq" },
+      }),
+    ).toEqual({});
+  });
   it("keeps only changed, known flags used by the selected workflow", () => {
     const result = selectedToolOptions("detection", {
       crispridentify: {

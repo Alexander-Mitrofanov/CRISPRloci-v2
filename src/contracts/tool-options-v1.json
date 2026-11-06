@@ -929,6 +929,44 @@
           "description": "The isolated worker supplies validated proteins, pinned ADF3.1.0 models and GA thresholds, at most four native workers and a 900-second stage deadline."
         }
       ]
+    },
+    {
+      "id": "mcaat",
+      "name": "MCAAT",
+      "modes": ["metagenomic"],
+      "description": "Find graph-derived repeat and spacer groups in a single-end DNA read pool. Genomic order, coordinates, host identity and evolutionary history are not inferred.",
+      "documentation": "https://github.com/RNABioInfo/mcaat/blob/44cfd8815504b9af57734aa7b27681f7aae0e3f7/README.md",
+      "revision": "44cfd8815504b9af57734aa7b27681f7aae0e3f7",
+      "cli_modes": [
+        {
+          "name": "mcaat (array analysis)",
+          "description": "Analyze one normalized FASTQ read pool with a fixed worker-owned policy."
+        }
+      ],
+      "flags": [],
+      "managed": [
+        {
+          "flags": ["--input-files", "--output-folder"],
+          "description": "The isolated worker supplies one normalized single-end FASTQ file and a private output directory."
+        },
+        {
+          "flags": ["--threads", "--ram", "--autoclean"],
+          "description": "Threads follow the worker budget, capped at eight; memory is fixed at 2 GB and intermediate-file cleanup is enabled."
+        },
+        {
+          "flags": [
+            "--cycle-min-length",
+            "--cycle-max-length",
+            "--threshold-multiplicity",
+            "--low-abundance"
+          ],
+          "description": "The pinned workflow uses cycle lengths 27\u201377, multiplicity threshold 20 and enabled low-abundance analysis."
+        },
+        {
+          "flags": ["--min-spacer-len", "--max-spacer-len", "--min-repeat-len", "--max-repeat-len"],
+          "description": "The worker fixes initial spacer lengths to 23\u201350 nt and repeat lengths to 23\u201355 nt. Native postprocessing may trim spacer sequences."
+        }
+      ]
     }
   ]
 }

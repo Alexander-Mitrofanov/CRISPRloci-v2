@@ -1,0 +1,60 @@
+{
+  "job_id": "dddddddddddddddddddddddddddddddd",
+  "status": "completed",
+  "mode": "metagenomic",
+  "input": {
+    "filename": "reads.fastq",
+    "record_count": 2,
+    "base_count": 64,
+    "source_ids": ["read_pool"]
+  },
+  "options": {},
+  "artifacts": [],
+  "summary": {
+    "metagenomic": {
+      "available": true,
+      "status": "completed",
+      "tool": {
+        "name": "MCAAT",
+        "version": "1.0.0"
+      },
+      "input": {
+        "format": "fastq",
+        "layout": "single_end_pool",
+        "reads": 2,
+        "bases": 64
+      },
+      "policy": {
+        "evidence": "graph_repeat_spacer_groups",
+        "spacer_order": "unknown",
+        "genomic_coordinates": "unavailable",
+        "host_assignment": "not_assessed",
+        "orientation": "unknown",
+        "quality_filtering": "not_performed",
+        "evolutionary_analysis": "not_performed"
+      },
+      "counts": {
+        "groups": 1,
+        "spacers": 2
+      },
+      "groups": [
+        {
+          "id": "Array_1",
+          "consensus_repeat": "ACGTACGTACGTACGTACGTACGTACGTACGT",
+          "spacers": [
+            {
+              "repeat_variant": "ACGTACGTACGTACGTACGTACGTACGTACGT",
+              "sequence": "TGCATGCATGCATGCATGCATGCATGCATGCA"
+            },
+            {
+              "repeat_variant": "ACGTACGTACGTACGTACGTACGTACGTACGT",
+              "sequence": "ACGTACGTACGTACGTACGTACGTACGTACGT"
+            }
+          ]
+        }
+      ],
+      "groups_truncated": false,
+      "warnings": []
+    }
+  }
+}

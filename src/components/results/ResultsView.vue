@@ -19,6 +19,7 @@ import ProphageContextResults from "./annotations/ProphageContextResults.vue";
 import InsertionContextResults from "./InsertionContextResults.vue";
 import DefenseContext from "./annotations/DefenseContext.vue";
 import RnaFamilyResults from "./RnaFamilyResults.vue";
+import MetagenomicResults from "./MetagenomicResults.vue";
 import CasContextRelations from "./annotations/CasContextRelations.vue";
 import AssociationResults from "./protospacer/AssociationResults.vue";
 import ViralResults from "./protospacer/ViralResults.vue";
@@ -66,6 +67,7 @@ const annotationMode = computed(() =>
 const repeatMode = computed(() => ["repeats", "repeat_context"].includes(props.job?.mode));
 const comparisonMode = computed(() => props.job?.mode === "array_compare");
 const contextModes = [
+  "metagenomic",
   "locus_compare",
   "prophage_context",
   "insertion_context",
@@ -126,6 +128,7 @@ const tabs = computed(() => [
         {
           id: props.job.mode,
           label: {
+            metagenomic: "Read groups",
             locus_compare: "Gene neighborhoods",
             prophage_context: "Prophage context",
             insertion_context: "Insertion sequences",
@@ -161,7 +164,6 @@ const exampleAssets = computed(
     props.exampleSnapshot &&
     exampleAssetsFor(props.job.mode, props.exampleSnapshot.example.submission_options),
 );
-
 watch([() => props.job?.job_id, () => props.job?.mode], () => {
   selectedTab.value = "overview";
   genomeOpened.value = false;
@@ -328,6 +330,11 @@ async function navigateTabs(event, index) {
         v-bind="summary.array_compare"
         :compact="tab.id === 'overview'"
       />
+      <MetagenomicResults
+        v-if="job.mode === 'metagenomic' && ['overview', 'metagenomic'].includes(tab.id)"
+        v-bind="summary.metagenomic"
+        :compact="tab.id === 'overview'"
+      />
       <LocusCompareResults
         v-if="job.mode === 'locus_compare' && ['overview', 'locus_compare'].includes(tab.id)"
         :available="summary.locus_compare.available"
@@ -397,14 +404,7 @@ async function navigateTabs(event, index) {
       />
       <RepeatMapResults
         v-if="mapMode && ['overview', 'repeat_map'].includes(tab.id)"
-        :available="summary.repeat_map.available"
-        :namespace="summary.repeat_map.namespace"
-        :reference-sha256="summary.repeat_map.referenceSha256"
-        :max-distance="summary.repeat_map.maxDistance"
-        :top-k="summary.repeat_map.topK"
-        :counts="summary.repeat_map.counts"
-        :results="summary.repeat_map.results"
-        :truncated="summary.repeat_map.truncated"
+        v-bind="summary.repeat_map"
         :compact="tab.id === 'overview'"
       />
       <ViralResults

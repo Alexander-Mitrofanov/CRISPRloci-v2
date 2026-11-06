@@ -23,7 +23,7 @@ const groups = computed(() =>
     {
       id: "loci-components",
       title: "Loci and components",
-      ids: ["detection", "loci", "cas", "tracrrna", "leader"],
+      ids: ["detection", "metagenomic", "loci", "cas", "tracrrna", "leader"],
     },
     {
       id: "genome-context",

@@ -41,6 +41,7 @@ describe("compact per-tool CLI settings", () => {
     renderForm(id);
     if (
       [
+        "metagenomic",
         "locus_compare",
         "prophage_context",
         "insertion_context",

@@ -5,6 +5,19 @@ export const DEFAULT_CATEGORY_POLICY = CATEGORY_POLICIES[0];
 
 export const ANALYSIS_MODES = [
   {
+    id: "metagenomic",
+    title: "Find CRISPR groups in reads",
+    resultTitle: "Metagenomic CRISPR groups",
+    short: "MCAAT · repeat and spacer graph evidence",
+    description:
+      "Analyze a single-end DNA read pool in plain FASTQ format with MCAAT. " +
+      "Inspect repeat and spacer groups from the read graph. Source coordinates, host identity, " +
+      "array order, orientation and evolutionary history are not inferred.",
+    minimumRecords: 1,
+    tools: ["MCAAT"],
+    requiresAdvertisement: true,
+  },
+  {
     id: "locus_compare",
     title: "Compare gene neighborhoods",
     resultTitle: "Gene-neighborhood comparison",
@@ -245,6 +258,11 @@ export const ANALYSIS_MODES = [
 export const STAGES = [
   { id: "queued", label: "Queued", detail: "Waiting for an analysis worker" },
   { id: "validate_input", label: "Validate input", detail: "Checking records and analysis policy" },
+  {
+    id: "mcaat",
+    label: "Find CRISPR read groups",
+    detail: "MCAAT · repeat and spacer graph evidence",
+  },
   { id: "cctk", label: "Compare observed arrays", detail: "CCTK · ordered spacer sharing" },
   {
     id: "clinker",
@@ -317,6 +335,7 @@ export const TERMINAL_STATUSES = new Set(publicApiContract.enums.terminal_status
 
 export function stagesForMode(mode) {
   const annotationStages = {
+    metagenomic: ["queued", "validate_input", "mcaat", "package_results"],
     locus_compare: ["queued", "validate_input", "annotate_cas", "clinker", "package_results"],
     prophage_context: ["queued", "validate_input", "detect_arrays", "phigaro", "package_results"],
     insertion_context: ["queued", "validate_input", "annotate_cas", "isescan", "package_results"],
@@ -378,6 +397,7 @@ export function stagesForMode(mode) {
     (stage) =>
       !excluded.has(stage.id) &&
       ![
+        "mcaat",
         "clinker",
         "phigaro",
         "isescan",

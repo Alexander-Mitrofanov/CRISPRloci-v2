@@ -36,6 +36,7 @@ afterEach(() => {
 describe("source-verified shipped examples", () => {
   it("offers the existing fifteen methods and both alternate input families only", () => {
     const newModes = new Set([
+      "metagenomic",
       "locus_compare",
       "prophage_context",
       "insertion_context",

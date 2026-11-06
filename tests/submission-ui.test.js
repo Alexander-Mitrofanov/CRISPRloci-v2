@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/vue";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import arrayPacket from "./fixtures/array-compare-input.json";
+import fastq from "./fixtures/metagenomic.fastq?raw";
 import { api } from "../src/api.js";
 import AnalysisForm from "../src/components/submission/AnalysisForm.vue";
 import { ANALYSIS_MODES } from "../src/science.js";
@@ -28,11 +29,13 @@ describe("Vue submission policy", () => {
     renderForm({ initialMode: id });
     await fireEvent.update(
       screen.getByRole("textbox"),
-      id === "array_compare"
-        ? JSON.stringify(arrayPacket)
-        : id === "rna_family"
-          ? `>a\n${"ACGT".repeat(8)}\n>b\n${"GCGT".repeat(8)}\n`
-          : ">a\nACGT\n>b\nACGT\n",
+      id === "metagenomic"
+        ? fastq
+        : id === "array_compare"
+          ? JSON.stringify(arrayPacket)
+          : id === "rna_family"
+            ? `>a\n${"ACGT".repeat(8)}\n>b\n${"GCGT".repeat(8)}\n`
+            : ">a\nACGT\n>b\nACGT\n",
     );
     if (id === "spacer_association") {
       const compute = screen.getByRole("button", { name: "Compute", exact: true });

@@ -1007,6 +1007,7 @@
   "enums": {
     "catalog_match_modes": ["exact", "similar"],
     "analysis_modes": [
+      "metagenomic",
       "detection",
       "orientation",
       "reconstruction",

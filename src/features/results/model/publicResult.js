@@ -1,3 +1,4 @@
+import { normalizeMetagenomic } from "./metagenomic.js";
 import { normalizeArrayCompare } from "./arrayCompare.js";
 import { normalizeCicero } from "./cicero.js";
 import { normalizeLocusCompare } from "./locusCompare.js";
@@ -32,6 +33,7 @@ export function normalizePublicResult(value, context = {}) {
     detection: normalizeDetection(summary),
     crisprleader: normalizeLeader(summary.crisprleader),
     repeats: normalizeRepeats(summary.repeats),
+    metagenomic: normalizeMetagenomic(summary.metagenomic),
     array_compare: normalizeArrayCompare(summary.array_compare),
     locus_compare: normalizeLocusCompare(summary.locus_compare),
     prophage_context: normalizeProphageContext(summary.prophage_context),

@@ -44,45 +44,47 @@ export function useAnalysisForm(props, emit, client = api, fetcher = globalThis.
   );
   const hasExample = computed(() => Boolean(exampleAssetsFor(mode.value, options.value)));
   const inputLimits = computed(() =>
-    ["locus_compare", "rna_family"].includes(mode.value)
-      ? {
-          ...props.limits,
-          maxRecords: Math.min(
-            props.limits.maxRecords || 50,
-            mode.value === "locus_compare" ? 8 : 50,
-          ),
-          maxRecordBases: Math.min(
-            props.limits.maxRecordBases || 50000,
-            mode.value === "locus_compare" ? 50000 : 500,
-          ),
-        }
-      : ["prophage_context", "insertion_context", "defense_context"].includes(mode.value)
+    mode.value === "metagenomic"
+      ? { ...props.limits, maxRecords: 100_000, maxRecordBases: 500 }
+      : ["locus_compare", "rna_family"].includes(mode.value)
         ? {
             ...props.limits,
-            maxRecords: Math.min(props.limits.maxRecords || 20, 20),
-            maxBases: Math.min(props.limits.maxBases || 2_000_000, 2_000_000),
-            maxRecordBases: Math.min(props.limits.maxRecordBases || 2_000_000, 2_000_000),
+            maxRecords: Math.min(
+              props.limits.maxRecords || 50,
+              mode.value === "locus_compare" ? 8 : 50,
+            ),
+            maxRecordBases: Math.min(
+              props.limits.maxRecordBases || 50000,
+              mode.value === "locus_compare" ? 50000 : 500,
+            ),
           }
-        : mode.value === "viral_search"
-          ? { ...props.limits, maxRecordBases: Math.min(props.limits.maxRecordBases || 80, 80) }
-          : ["repeats", "repeat_map", "repeat_type", "spacer_association"].includes(mode.value)
-            ? {
-                ...props.limits,
-                maxRecords: Math.min(
-                  props.limits.maxRecords || 1000,
-                  mode.value === "repeat_map" ? 100 : 1000,
-                ),
-                maxRecordBases: Math.min(props.limits.maxRecordBases || 200, 200),
-              }
-            : mode.value === "protospacer"
+        : ["prophage_context", "insertion_context", "defense_context"].includes(mode.value)
+          ? {
+              ...props.limits,
+              maxRecords: Math.min(props.limits.maxRecords || 20, 20),
+              maxBases: Math.min(props.limits.maxBases || 2_000_000, 2_000_000),
+              maxRecordBases: Math.min(props.limits.maxRecordBases || 2_000_000, 2_000_000),
+            }
+          : mode.value === "viral_search"
+            ? { ...props.limits, maxRecordBases: Math.min(props.limits.maxRecordBases || 80, 80) }
+            : ["repeats", "repeat_map", "repeat_type", "spacer_association"].includes(mode.value)
               ? {
                   ...props.limits,
-                  maxBases: Math.min(props.limits.maxBases || 5_000_000, 5_000_000),
-                  maxRecordBases: Math.min(props.limits.maxRecordBases || 5_000_000, 5_000_000),
+                  maxRecords: Math.min(
+                    props.limits.maxRecords || 1000,
+                    mode.value === "repeat_map" ? 100 : 1000,
+                  ),
+                  maxRecordBases: Math.min(props.limits.maxRecordBases || 200, 200),
                 }
-              : mode.value === "repeat_context"
-                ? { ...props.limits, maxRecords: Math.min(props.limits.maxRecords || 1000, 1000) }
-                : props.limits,
+              : mode.value === "protospacer"
+                ? {
+                    ...props.limits,
+                    maxBases: Math.min(props.limits.maxBases || 5_000_000, 5_000_000),
+                    maxRecordBases: Math.min(props.limits.maxRecordBases || 5_000_000, 5_000_000),
+                  }
+                : mode.value === "repeat_context"
+                  ? { ...props.limits, maxRecords: Math.min(props.limits.maxRecords || 1000, 1000) }
+                  : props.limits,
   );
 
   const inspection = computed(() =>
